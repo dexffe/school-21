@@ -22,7 +22,8 @@ int read_initial_state_from_stdin(int current_field[HEIGHT][WIDTH]);
 void reload_terminal();
 
 int main() {
-    int current_field[HEIGHT][WIDTH], future_field[HEIGHT][WIDTH];
+    int current_field[HEIGHT][WIDTH] = {0};
+    int future_field[HEIGHT][WIDTH] = {0};
     init_ncurses();
     read_initial_state_from_stdin(current_field);
     reload_terminal();
@@ -48,7 +49,7 @@ void draw_field(int current_field[HEIGHT][WIDTH], int speed) {
         }
     }
 
-    mvprintw(UI_ROW, 0, "Delay: %d ms | 'a/z' to change speed | 'space' to exit'", speed);
+    mvprintw(UI_ROW, 0, "Delay: %d ms | 'a/z' to change speed | 'space' to exit", speed);
     refresh();
 }
 
@@ -100,7 +101,7 @@ int game_loop(int current_field[HEIGHT][WIDTH], int future_field[HEIGHT][WIDTH])
         draw_field(current_field, speed);
         create_next_field(current_field, future_field);
         napms(speed);
-        char key = getch();
+        int key = getch();
         if (key != ERR) {
             if (key == ' ') {
                 exit_game = true;
@@ -122,5 +123,8 @@ int game_loop(int current_field[HEIGHT][WIDTH], int future_field[HEIGHT][WIDTH])
 }
 void reload_terminal() {
     fclose(stdin);
-    stdin = fopen("/dev/tty", "r");
+    FILE* new_stdin = fopen("/dev/tty", "r");
+    if (new_stdin != NULL) {
+        stdin = new_stdin;
+    }
 }
