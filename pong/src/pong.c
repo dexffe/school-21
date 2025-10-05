@@ -1,9 +1,9 @@
+// I WANT TO PLAY WITH YOU
+//         YOUR FRIEND, AI
+
 #include <stdio.h>
-#include <ncurses.h>
 
 int main(void) {
-    initscr();
-
     int ball_x = 40, ball_y = 12, speed_ball_x = 1, speed_ball_y = 1;
     int player_1 = 11, player_2 = 11;
     int point_player_1 = 0, point_player_2 = 0;
@@ -31,47 +31,46 @@ int main(void) {
         printf("Press 'k'/'m' to move paddle 2\n");
 
         // input step
-        c = getch();
+        c = getchar();
 
-        // check step
-        if (c == 'a' && player_1 > 1) player_1--;
-        if (c == 'z' && player_1 < 21) player_1++;
-        if (c == 'k' && player_2 > 1) player_2--;
-        if (c == 'm' && player_2 < 21) player_2++;
+        if ((c != '\n') && (c == 'a' || c == 'z' || c == 'k' || c == 'm' || c == ' ')) {
+            // check input
+            if (c == 'a' && player_1 > 1) player_1--;
+            if (c == 'z' && player_1 < 21) player_1++;
+            if (c == 'k' && player_2 > 1) player_2--;
+            if (c == 'm' && player_2 < 21) player_2++;
 
-        // change coords ball
-        ball_x += speed_ball_x;
-        ball_y += speed_ball_y;
+            // change coords ball
+            ball_x += speed_ball_x;
+            ball_y += speed_ball_y;
 
-        //TODO: Реализовать момент отскока по верхнему и нижнему краю поля
-        if (ball_y <= 1) {
-            ball_y = 1;
-            speed_ball_y = 1;
+            // TODO: Реализовать момент отскока по верхнему и нижнему краю поля
+            //  code
+            if (ball_y == 1) speed_ball_y *= -1;
+            if (ball_y == 23) speed_ball_y *= -1;
+
+            // TODO: Реализовать момент отскока от ракеток(то чем управляют игроки)
+            //  code
+            if ((ball_x == 2) && (ball_y >= player_1) && (ball_y <= player_1 + 2)) speed_ball_x *= -1;
+            if ((ball_x == 77) && (ball_y >= player_2) && (ball_y <= player_2 + 2)) speed_ball_x *= -1;
+
+            // TODO: Реализовать момент забитого мяча(после гола направить мяч в другую сторону)
+            //  code
+            if (ball_x == 1) {
+                ball_x = 40;
+                ball_y = 12;
+                point_player_2++;
+                speed_ball_x *= -1;
+                speed_ball_y *= -1;
+            }
+            if (ball_x == 78) {
+                ball_x = 40;
+                ball_y = 12;
+                point_player_1++;
+                speed_ball_x *= -1;
+                speed_ball_y *= -1;
+            }
         }
-        if (ball_y >= 23) {
-            ball_y = 23;
-            speed_ball_y = -1;
-        }
-
-        //TODO: Реализовать момент отскока от кареток(то чем управляют игроки)
-        if (ball_x == 2 && ball_y >= player_1 && ball_y < player_1 + 3) speed_ball_x = 1;
-        if (ball_x == 77 && ball_y >= player_2 && ball_y < player_2 + 3) speed_ball_x = -1;
-
-
-        //TODO: Реализовать момент забитого мяча(после гола направить мяч в другую сторону)
-        if (ball_x <= 0) {
-            point_player_2++;
-            ball_x = 40;
-            ball_y = 12;
-            speed_ball_x = 1;
-        }
-        if (ball_x >= 79) {
-            point_player_1++;
-            ball_x = 40;
-            ball_y = 12;
-            speed_ball_x = -1;
-        }
-        refresh();
     }
 
     if (point_player_1 == 21)
@@ -79,6 +78,5 @@ int main(void) {
     else
         printf("Player 2 wins!\n");
 
-    endwin(); 
     return 0;
 }
