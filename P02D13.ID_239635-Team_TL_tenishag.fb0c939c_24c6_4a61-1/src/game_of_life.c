@@ -15,7 +15,7 @@
 void init_ncurses();
 void draw_field(int current_field[HEIGHT][WIDTH], int speed);
 int count_alive_neighbors(const int current_field[HEIGHT][WIDTH], int x, int y);
-void update_field(int current_field[HEIGHT][WIDTH], int next_field[HEIGHT][WIDTH]);
+void create_next_field(int current_field[HEIGHT][WIDTH], int future_field[HEIGHT][WIDTH]);
 void end_game();
 int game_loop(int current_field[HEIGHT][WIDTH], int future_field[HEIGHT][WIDTH]);
 int read_initial_state_from_stdin(int current_field[HEIGHT][WIDTH]);
@@ -104,10 +104,10 @@ int game_loop(int current_field[HEIGHT][WIDTH], int future_field[HEIGHT][WIDTH])
         if (key != ERR) {
             if (key == ' ') {
                 exit_game = true;
-            } else if (key == 'a') {
+            } else if (key == 'a' || key == 'A') {
                 speed -= 100;
                 if (speed < 50) speed = 50;
-            } else if (key == 'z') {
+            } else if (key == 'z' || key == 'Z') {
                 speed += 100;
                 if (speed > 3000) speed = 3000;
             }
