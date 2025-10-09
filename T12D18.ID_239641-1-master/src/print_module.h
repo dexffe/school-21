@@ -1,6 +1,9 @@
 #ifndef PRINT_MODULE_H
 #define PRINT_MODULE_H
 
+#include <time.h>
+#include <stdio.h>
+
 #define Module_load_success_message "Output stream module load: success\n"
 #define Log_prefix "[LOG]"
 
@@ -9,8 +12,8 @@
     output: void
     result: "Log_prefix HH:MM:SS message"
 */
-void print_log(char (*print) (char), char* message);
+void print_log(int (*print)(char), const char* message);
 
-char print_char(char ch);
+int print_char(char ch);
 
 #endif // PRINT_MODULE_H
