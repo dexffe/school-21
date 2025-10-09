@@ -2,7 +2,7 @@
 #define LIST_H
 
 #include "door_struct.h"
-struct node{
+struct node {
     struct door data;
     struct node* next;
 };
