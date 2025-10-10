@@ -6,6 +6,9 @@ BUILD_DIR = ../build
 all: 
 	make main_module_entry_point
 	make documentation_module
+	make bst_init
+	make bst_insert
+	make bst_traversal
 
 
 main_module_entry_point:
@@ -14,7 +17,14 @@ main_module_entry_point:
 documentation_module: 
 	$(CC) $(CFLAGS) main_module_entry_point.c documentation_module.c print_module.c -o $(BUILD_DIR)/Quest_2
 
+bst_init:
+	$(CC) $(CFLAGS) -D QUEST3 bst.c bst_create_test.c -o $(BUILD_DIR)/Quest_3
 
+bst_insert:
+	$(CC) $(CFLAGS) -D QUEST4 bst.c bst_create_test.c -o $(BUILD_DIR)/Quest_4
+
+bst_traversal:
+	$(CC) $(CFLAGS) -D QUEST5 bst.c bst_create_test.c -o $(BUILD_DIR)/Quest_5
 
 
 # Проверка кода на статическом анализе (Cppcheck)
@@ -36,5 +46,5 @@ format:
 
 # Очистка
 clean:
-	rm -f $(BUILD_DIR)/* *.o
+	rm -f $(BUILD_DIR)/* *.o *.out
 
