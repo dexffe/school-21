@@ -1,47 +1,34 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "draw.h"
+#include <stdio.h>
+#include <math.h>
 #include "eval.h"
-#include "inp.h"
 #include "tokenize.h"
-#include "validation.h"
 #include "yard.h"
-
-#define M_PI 3.14159265358979323846
+#include "validation.h"
+#include <stdlib.h>
 
 int is_valid(const char expr[]) {
     int valid = 1;
     if (validate_expression(expr) != SUCCESS) {
-        printf("n/a;");
+        printf("Invalid expression\n");
         valid = 0;
     }
     return valid;
 }
 
-int main_process(const char expr[]) {
+int main_process(const char* expr) {
     char buf[DRAW_HEIGHT][DRAW_WIDTH];
-    double samples[DRAW_WIDTH];
-
+    
     Token* tokens = NULL;
     int tokenCount = 0;
-    tokenize(expr, &tokens, &tokenCount);
+    tokenize((char*)expr, &tokens, &tokenCount);
 
     Token* postfix = malloc(tokenCount * sizeof(Token));
     int postfixCount = 0;
     infixToPostfix(tokens, tokenCount, &postfix, &postfixCount);
-
-    for (int x = 0; x < DRAW_WIDTH; x++) {
-        double t = (4.0 * M_PI) * x / (DRAW_WIDTH - 1);
-        double y = evaluatePostfix(postfix, postfixCount, t);
-        if (y > 1.0) y = 1.0;
-        if (y < -1.0) y = -1.0;
-        samples[x] = y;
-    }
-
+    
     draw_init_buffer(buf);
-    draw_plot_samples(samples, buf);
+    draw_plot_samples(buf, postfix, postfixCount);
     draw_print_buffer(buf);
 
     for (int i = 0; i < tokenCount; i++) {
@@ -54,12 +41,26 @@ int main_process(const char expr[]) {
 
     return 0;
 }
-
 int main() {
-    char* expr = input_string();
-    if (is_valid(expr)) {
-        main_process(expr);
+    char expr[100];
+    int result = 0;
+    
+    printf("input exp: ");
+    if (fgets(expr, sizeof(expr), stdin) != NULL) {
+        size_t len = strlen(expr);
+        if (len > 0 && expr[len-1] == '\n') {
+            expr[len-1] = '\0';
+        }
+        
+        if (is_valid(expr)) {
+            main_process(expr);
+        } else {
+            result = 1; 
+        }
+    } else {
+        printf("Error reading input\n");
+        result = 1; 
     }
-    free(expr);
-    return 0;
+    
+    return result; 
 }
