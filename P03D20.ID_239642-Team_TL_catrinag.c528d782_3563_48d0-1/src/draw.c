@@ -26,7 +26,7 @@ int draw_map_y_to_screen(double y) {
     
     return screen_y;
 }
-void draw_plot_samples(char buf[DRAW_HEIGHT][DRAW_WIDTH], Token* postfix, int postfixCount) {
+void draw_plot_samples(char buf[DRAW_HEIGHT][DRAW_WIDTH], const Token* postfix, int postfixCount) {
     for (int screen_x = 0; screen_x < DRAW_WIDTH; screen_x++) {
         double math_x = X_MIN + (double)screen_x / (DRAW_WIDTH - 1) * (X_MAX - X_MIN);
         

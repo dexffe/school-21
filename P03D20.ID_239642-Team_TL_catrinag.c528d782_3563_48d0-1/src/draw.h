@@ -19,7 +19,7 @@
 
 void draw_init_buffer(char buf[DRAW_HEIGHT][DRAW_WIDTH]);
 int draw_map_y_to_screen(double y);
-void draw_plot_samples(char buf[DRAW_HEIGHT][DRAW_WIDTH], Token* postfix, int postfixCount);
+void draw_plot_samples(char buf[DRAW_HEIGHT][DRAW_WIDTH], const Token* postfix, int postfixCount);    
 void draw_print_buffer(const char buf[DRAW_HEIGHT][DRAW_WIDTH]);
 
 #endif
