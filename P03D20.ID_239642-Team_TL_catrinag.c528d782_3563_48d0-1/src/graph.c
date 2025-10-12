@@ -23,28 +23,28 @@ int is_valid(const char expr[]) {
 int main_process(char expr[]) {
     char buf[DRAW_HEIGHT][DRAW_WIDTH];
     double samples[DRAW_WIDTH];
-    
-    
 
     Token* tokens = NULL;
-	int tokenCount = 0;
+    int tokenCount = 0;
+    tokenize(expr, &tokens, &tokenCount);
 
-	tokenize(expr, &tokens, &tokenCount);
-    
     Token* postfix = malloc(tokenCount * sizeof(Token));
     int postfixCount = 0;
-
     infixToPostfix(tokens, tokenCount, &postfix, &postfixCount);
 
     for (int x = 0; x < DRAW_WIDTH; x++) {
         double t = (4.0 * M_PI) * x / (DRAW_WIDTH - 1);
-        samples[x] = evaluatePostfix(postfix, postfixCount, t);
+        double y = evaluatePostfix(postfix, postfixCount, t);
+        if (y > 1.0) y = 1.0;
+        if (y < -1.0) y = -1.0;
+        samples[x] = y;
     }
 
     draw_init_buffer(buf);
     draw_plot_samples(samples, buf);
     draw_print_buffer(buf);
 
+    // Освобождение памяти
     for (int i = 0; i < tokenCount; i++) {
         if (tokens[i].type == FUNCTION) {
             free(tokens[i].function);
@@ -57,7 +57,7 @@ int main_process(char expr[]) {
 }
 
 int main() {
-    char expr[] = "x()";
+    char expr[] = "x";
     if (is_valid(expr)) {
         main_process(expr);
     }
