@@ -4,4 +4,4 @@
 
 #include "tokenize.h"
 
-double evaluatePostfix(Token* postfix, int postfixCount, double x);
+double evaluatePostfix(const Token* postfix, int postfixCount, double x);

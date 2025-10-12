@@ -1,29 +1,27 @@
 #include "validation.h"
-#include "tokenize.h"
-#include <string.h>
+
 #include <stdlib.h>
+#include <string.h>
+
+#include "tokenize.h"
 
 static int is_function_name(const char* name) {
     if (!name) return 0;
-    return (strcmp(name, "sin") == 0 ||
-            strcmp(name, "cos") == 0 ||
-            strcmp(name, "tan") == 0 ||
-            strcmp(name, "ctg") == 0 ||
-            strcmp(name, "log") == 0 ||
-            strcmp(name, "ln")  == 0 ||
+    return (strcmp(name, "sin") == 0 || strcmp(name, "cos") == 0 || strcmp(name, "tan") == 0 ||
+            strcmp(name, "ctg") == 0 || strcmp(name, "log") == 0 || strcmp(name, "ln") == 0 ||
             strcmp(name, "sqrt") == 0);
 }
 
-static int check_brackets(Token* tokens, int token_count) {
+static int check_brackets(const Token* tokens, int token_count) {
     int balance = 0;
     int i = 0;
     int valid = SUCCESS;
 
     while (i < token_count && valid == SUCCESS) {
         if (tokens[i].type == PARENTHESIS) {
-            if (tokens[i].operator == '(') {
+            if (tokens[i].operator== '(') {
                 balance++;
-            } else if (tokens[i].operator == ')') {
+            } else if (tokens[i].operator== ')') {
                 balance--;
                 if (balance < 0) {
                     valid = FAIL;
@@ -47,23 +45,15 @@ static int check_operators(Token* tokens, int token_count) {
     while (i < token_count && valid == SUCCESS) {
         if (tokens[i].type == OPERATOR) {
             char op = tokens[i].operator;
-            if (op != '+' && op != '-' && op != '*' && op != '/' && op != '^') {
-                valid = FAIL;
-            }
-            else if (i == 0) {
-                if (op != '+' && op != '-') {
+            if (op == '+' || op == '-' || op == '*' || op == '/' || op == '^') {
+                if ((i == 0 && op != '+' && op != '-') || (i == token_count - 1)) {
                     valid = FAIL;
-                }
-            }
-            else if (i == token_count - 1) {
-                valid = FAIL;
-            }
-            else {
-                Token* prev = &tokens[i - 1];
-                if (prev->type == OPERATOR || 
-                    (prev->type == PARENTHESIS && prev->operator == '(')) {
-                    if (op != '+' && op != '-') {
-                        valid = FAIL;
+                } else if (i > 0) {
+                    const Token* prev = &tokens[i - 1];
+                    if (prev->type == OPERATOR || (prev->type == PARENTHESIS && prev->operator!= '(')) {
+                        if (!(op == '+' || op == '-')) {
+                            valid = FAIL;
+                        }
                     }
                 }
             }
@@ -74,16 +64,14 @@ static int check_operators(Token* tokens, int token_count) {
     return valid;
 }
 
-static int check_functions(Token* tokens, int token_count) {
+static int check_functions(const Token* tokens, int token_count) {
     int i = 0;
     int valid = SUCCESS;
 
     while (i < token_count && valid == SUCCESS) {
         if (tokens[i].type == FUNCTION) {
-            if (i + 1 >= token_count ||
-                tokens[i + 1].type != PARENTHESIS ||
-                tokens[i + 1].operator != '(' ||
-                !is_function_name(tokens[i].function)) {
+            if (i + 1 >= token_count || tokens[i + 1].type != PARENTHESIS ||
+                tokens[i + 1].operator!= '(' || !is_function_name(tokens[i].function)) {
                 valid = FAIL;
             }
         }
@@ -109,6 +97,11 @@ int validate_expression(const char* infix) {
             result = SUCCESS;
         }
 
+        for (int i = 0; i < token_count; i++) {
+            if (tokens[i].type == FUNCTION) {
+                free(tokens[i].function);
+            }
+        }
         free(tokens);
     }
 

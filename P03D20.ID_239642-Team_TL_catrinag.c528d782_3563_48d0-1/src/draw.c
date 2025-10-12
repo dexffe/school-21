@@ -1,4 +1,5 @@
 #include "draw.h"
+
 #include <math.h>
 #include <stdio.h>
 
@@ -11,13 +12,20 @@ void draw_init_buffer(char buf[DRAW_HEIGHT][DRAW_WIDTH]) {
 }
 
 void draw_plot_samples(const double samples[DRAW_WIDTH], char buf[DRAW_HEIGHT][DRAW_WIDTH]) {
-    const int center_y = DRAW_HEIGHT / 2; 
+    const int center_y = DRAW_HEIGHT / 2;
     const double y_scale = (double)center_y;
 
     for (int x = 0; x < DRAW_WIDTH; x++) {
         double y_val = samples[x];
 
         int y = (int)round(center_y + y_val * y_scale);
+        if (y >= DRAW_HEIGHT) {
+            if (y_val > 0) {
+                y = DRAW_HEIGHT - 1;
+            } else {
+                y = 0;
+            }
+        }
 
         if (y < 0) y = 0;
         if (y >= DRAW_HEIGHT) y = DRAW_HEIGHT - 1;

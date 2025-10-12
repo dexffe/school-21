@@ -1,7 +1,7 @@
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
-typedef enum {NUMBER, OPERATOR, FUNCTION, PARENTHESIS} TokenType;
+typedef enum { NUMBER, OPERATOR, FUNCTION, PARENTHESIS } TokenType;
 
 typedef struct {
     TokenType type;
@@ -12,6 +12,6 @@ typedef struct {
     };
 } Token;
 
-void tokenize(char* expr, Token** tokens, int* tokenCount);
+int tokenize(const char* expr, Token** tokens, int* tokenCount);
 
 #endif

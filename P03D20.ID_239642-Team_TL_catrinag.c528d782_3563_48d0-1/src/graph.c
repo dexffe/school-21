@@ -1,26 +1,26 @@
-
-#include "draw.h"
-#include <stdio.h>
 #include <math.h>
-#include "eval.h"
-#include "tokenize.h"
-#include "yard.h"
-#include "validation.h"
+#include <stdio.h>
 #include <stdlib.h>
 
+#include "draw.h"
+#include "eval.h"
+#include "inp.h"
+#include "tokenize.h"
+#include "validation.h"
+#include "yard.h"
 
 #define M_PI 3.14159265358979323846
 
 int is_valid(const char expr[]) {
     int valid = 1;
     if (validate_expression(expr) != SUCCESS) {
-        printf("Invalid expression\n");
+        printf("n/a;");
         valid = 0;
     }
     return valid;
 }
 
-int main_process(char expr[]) {
+int main_process(const char expr[]) {
     char buf[DRAW_HEIGHT][DRAW_WIDTH];
     double samples[DRAW_WIDTH];
 
@@ -44,7 +44,6 @@ int main_process(char expr[]) {
     draw_plot_samples(samples, buf);
     draw_print_buffer(buf);
 
-    // Освобождение памяти
     for (int i = 0; i < tokenCount; i++) {
         if (tokens[i].type == FUNCTION) {
             free(tokens[i].function);
@@ -57,9 +56,10 @@ int main_process(char expr[]) {
 }
 
 int main() {
-    char expr[] = "x";
+    char* expr = input_string();
     if (is_valid(expr)) {
         main_process(expr);
     }
+    free(expr);
     return 0;
 }
